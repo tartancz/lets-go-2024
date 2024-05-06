@@ -36,7 +36,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	//     return
 	// }
 
-	// err = ts.ExecuteTemplate(w, "base", nil)
+	// err = ts.ExecuteTemplate(w, "base", nial)
 	// if err != nil {
 	//     app.serverError(w, r, err)
 	// }
