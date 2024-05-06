@@ -8,4 +8,5 @@ import "github.com/tartancz/lets-go-2024/internal/models"
 // to it as the build progresses.
 type templateData struct {
 	Snippet models.Snippet
+	Snippets []models.Snippet
 }
