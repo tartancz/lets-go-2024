@@ -6,12 +6,17 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"github.com/tartancz/lets-go-2024/internal/models"
 
 	_ "github.com/go-sql-driver/mysql"
+
 )
 
+// Add a snippets field to the application struct. This will allow us to
+// make the SnippetModel object available to our handlers.
 type application struct {
-	logger *slog.Logger
+	logger   *slog.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -26,13 +31,13 @@ func main() {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
+	defer db.Close()
 
-    defer db.Close()
-
-	// Initialize a new instance of our application struct, containing the
-	// dependencies (for now, just the structured logger).
+	// Initialize a models.SnippetModel instance containing the connection pool
+	// and add it to the application dependencies.
 	app := &application{
-		logger: logger,
+		logger:   logger,
+		snippets: &models.SnippetModel{DB: db},
 	}
 
 	logger.Info("starting server", "addr", *addr)
@@ -41,7 +46,6 @@ func main() {
 	logger.Error(err.Error())
 	os.Exit(1)
 }
-
 func openDB(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
