@@ -10,24 +10,24 @@ import (
 // Change the signature of the home handler so it is defined as a method against
 // *application.
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-    w.Header().Add("Server", "Go")
-    
-    files := []string{
-        "./ui/html/base.tmpl",
-        "./ui/html/partials/nav.tmpl",
-        "./ui/html/pages/home.tmpl",
-    }
+	w.Header().Add("Server", "Go")
 
-    ts, err := template.ParseFiles(files...)
-    if err != nil {
-        app.serverError(w, r, err) // Use the serverError() helper.
-        return
-    }
+	files := []string{
+		"./ui/html/base.tmpl",
+		"./ui/html/partials/nav.tmpl",
+		"./ui/html/pages/home.tmpl",
+	}
 
-    err = ts.ExecuteTemplate(w, "base", nil)
-    if err != nil {
-        app.serverError(w, r, err) // Use the serverError() helper.
-    }
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, r, err) // Use the serverError() helper.
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		app.serverError(w, r, err) // Use the serverError() helper.
+	}
 }
 
 // Change the signature of the snippetView handler so it is defined as a method
@@ -51,6 +51,22 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 // Change the signature of the snippetCreatePost handler so it is defined as a method
 // against *application.
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
+	title := "O snail"
+	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
+	expires := 7
+
+	// Pass the data to the SnippetModel.Insert() method, receiving the
+	// ID of the new record back.
+	id, err := app.snippets.Insert(title, content, expires)
+
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	// Redirect the user to the relevant page for the snippet.
+	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
+
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Save a new snippet..."))
 }
