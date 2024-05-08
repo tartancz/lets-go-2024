@@ -103,7 +103,7 @@ func (m *SnippetModel) Latest() ([]Snippet, error) {
 	var snippet Snippet
 	snippets := []Snippet{}
 	for res.Next(){
-		err = res.Scan(&snippet.ID, &snippet.Title, &snippet.Content, &snippet.Content, &snippet.Expires)
+		err = res.Scan(&snippet.ID, &snippet.Title, &snippet.Content, &snippet.Created, &snippet.Expires)
 		if err != nil {
 			return nil, err
 		}
